@@ -14,37 +14,26 @@ void dijkstraCost(vector<vector<Flight>>& adjList,
 
     int n = airports.size();
     
-    // Step 1: Set all distances to infinity
     vector<int> dist(n, INT_MAX);
-    
-    // Step 2: Track which airport we came from
     vector<int> parent(n, -1);
     
-    // Step 3: Min heap priority queue {cost, airportId}
     priority_queue<pair<int,int>, 
                    vector<pair<int,int>>, 
                    greater<pair<int,int>>> pq;
 
-    // Step 4: Start from source
     dist[src] = 0;
     pq.push({0, src});
 
-    // Step 5: Keep exploring until queue empty
     while (!pq.empty()) {
-        
-        // Pick airport with minimum cost
         int currCost = pq.top().first;
         int currNode = pq.top().second;
         pq.pop();
 
-        // Skip if already processed
         if (currCost > dist[currNode]) continue;
 
-        // Explore all flights from current airport
         for (auto flight : adjList[currNode]) {
             int newCost = dist[currNode] + flight.cost;
 
-            // If cheaper path found → update
             if (newCost < dist[flight.destination]) {
                 dist[flight.destination] = newCost;
                 parent[flight.destination] = currNode;
@@ -53,7 +42,6 @@ void dijkstraCost(vector<vector<Flight>>& adjList,
         }
     }
 
-    // Step 6: Print result
     cout << "\n========================================" << endl;
     if (dist[dest] == INT_MAX) {
         cout << "No route found between " 
@@ -64,7 +52,6 @@ void dijkstraCost(vector<vector<Flight>>& adjList,
         cout << "MINIMUM COST ROUTE FOUND" << endl;
         cout << "========================================" << endl;
 
-        // Trace back the path using parent array
         vector<string> path;
         int curr = dest;
         while (curr != -1) {
@@ -72,8 +59,7 @@ void dijkstraCost(vector<vector<Flight>>& adjList,
             curr = parent[curr];
         }
 
-        // Path is reversed so print backwards
-        cout << "Route    : ";
+        cout << "Route     : ";
         for (int i = path.size() - 1; i >= 0; i--) {
             cout << path[i];
             if (i != 0) cout << " -> ";
@@ -93,18 +79,13 @@ void dijkstraDistance(vector<vector<Flight>>& adjList,
 
     int n = airports.size();
 
-    // All distances start as infinity
     vector<int> dist(n, INT_MAX);
-
-    // Track path
     vector<int> parent(n, -1);
 
-    // Min heap priority queue
     priority_queue<pair<int,int>,
                    vector<pair<int,int>>,
                    greater<pair<int,int>>> pq;
 
-    // Start from source
     dist[src] = 0;
     pq.push({0, src});
 
@@ -113,14 +94,9 @@ void dijkstraDistance(vector<vector<Flight>>& adjList,
         int currNode = pq.top().second;
         pq.pop();
 
-        // Skip outdated entries
         if (currDist > dist[currNode]) continue;
 
-        // Explore all flights from current airport
         for (auto flight : adjList[currNode]) {
-
-            // ONLY DIFFERENCE FROM FUNCTION 1
-            // Using flight.distance instead of flight.cost
             int newDist = dist[currNode] + flight.distance;
 
             if (newDist < dist[flight.destination]) {
@@ -131,7 +107,6 @@ void dijkstraDistance(vector<vector<Flight>>& adjList,
         }
     }
 
-    // Print result
     cout << "\n========================================" << endl;
     if (dist[dest] == INT_MAX) {
         cout << "No route found between "
@@ -142,7 +117,6 @@ void dijkstraDistance(vector<vector<Flight>>& adjList,
         cout << "SHORTEST DISTANCE ROUTE FOUND" << endl;
         cout << "========================================" << endl;
 
-        // Trace path backwards using parent array
         vector<string> path;
         int curr = dest;
         while (curr != -1) {
@@ -150,7 +124,6 @@ void dijkstraDistance(vector<vector<Flight>>& adjList,
             curr = parent[curr];
         }
 
-        // Print path in correct order
         cout << "Route         : ";
         for (int i = path.size() - 1; i >= 0; i--) {
             cout << path[i];
@@ -158,6 +131,73 @@ void dijkstraDistance(vector<vector<Flight>>& adjList,
         }
         cout << endl;
         cout << "Total Distance: " << dist[dest] << "km" << endl;
+    }
+    cout << "========================================" << endl;
+}
+
+// ==========================================
+// FUNCTION 3 - Fewest Layovers (BFS)
+// ==========================================
+void bfsLayovers(vector<vector<Flight>>& adjList,
+                 vector<Airport>& airports,
+                 int src, int dest) {
+
+    int n = airports.size();
+
+    vector<bool> visited(n, false);
+    vector<int> parent(n, -1);
+
+    queue<int> q;
+
+    visited[src] = true;
+    q.push(src);
+
+    while (!q.empty()) {
+        int currNode = q.front();
+        q.pop();
+
+        if (currNode == dest) break;
+
+        for (auto flight : adjList[currNode]) {
+            if (!visited[flight.destination]) {
+                visited[flight.destination] = true;
+                parent[flight.destination] = currNode;
+                q.push(flight.destination);
+            }
+        }
+    }
+
+    cout << "\n========================================" << endl;
+    if (!visited[dest]) {
+        cout << "No route found between "
+             << airports[src].code
+             << " and "
+             << airports[dest].code << endl;
+    } else {
+        cout << "FEWEST LAYOVERS ROUTE FOUND" << endl;
+        cout << "========================================" << endl;
+
+        vector<string> path;
+        int curr = dest;
+        while (curr != -1) {
+            path.push_back(airports[curr].city);
+            curr = parent[curr];
+        }
+
+        int layovers = path.size() - 2;
+
+        cout << "Route    : ";
+        for (int i = path.size() - 1; i >= 0; i--) {
+            cout << path[i];
+            if (i != 0) cout << " -> ";
+        }
+        cout << endl;
+
+        if (layovers <= 0) {
+            cout << "Layovers : Non-stop flight!" << endl;
+        } else {
+            cout << "Layovers : " << layovers << endl;
+        }
     }
     cout << "========================================" << endl;
 }

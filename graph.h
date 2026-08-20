@@ -48,5 +48,10 @@ void dijkstraCost(vector<vector<Flight>>& adjList,
 void dijkstraDistance(vector<vector<Flight>>& adjList,
                       vector<Airport>& airports,
                       int src, int dest);
+                      
+ void bfsLayovers(vector<vector<Flight>>& adjList,
+                 vector<Airport>& airports,
+                 int src, int dest);                    
+                      
 
 #endif

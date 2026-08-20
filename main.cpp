@@ -26,10 +26,7 @@ int main() {
 
     int choice;
 
-    // Keep showing menu until user exits
     while (true) {
-
-        // Show menu
         cout << "\n========================================" << endl;
         cout << "            MAIN MENU                   " << endl;
         cout << "========================================" << endl;
@@ -37,22 +34,20 @@ int main() {
         cout << "2. Show All Routes" << endl;
         cout << "3. Find Minimum COST Route" << endl;
         cout << "4. Find Shortest DISTANCE Route" << endl;
-        cout << "5. Exit" << endl;
+        cout << "5. Find Fewest LAYOVERS Route" << endl;
+        cout << "6. Exit" << endl;
         cout << "========================================" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
 
-        // Option 1 - Show airports
         if (choice == 1) {
             g.displayAirports();
         }
 
-        // Option 2 - Show all routes
         else if (choice == 2) {
             g.displayRoutes();
         }
 
-        // Option 3 - Minimum cost
         else if (choice == 3) {
             int src, dest;
             cout << "\n--- Available Airports ---" << endl;
@@ -64,7 +59,6 @@ int main() {
             dijkstraCost(g.getAdjList(), g.getAirports(), src, dest);
         }
 
-        // Option 4 - Shortest distance
         else if (choice == 4) {
             int src, dest;
             cout << "\n--- Available Airports ---" << endl;
@@ -76,16 +70,25 @@ int main() {
             dijkstraDistance(g.getAdjList(), g.getAirports(), src, dest);
         }
 
-        // Option 5 - Exit
         else if (choice == 5) {
+            int src, dest;
+            cout << "\n--- Available Airports ---" << endl;
+            g.displayAirports();
+            cout << "\nEnter Source Airport ID      : ";
+            cin >> src;
+            cout << "Enter Destination Airport ID : ";
+            cin >> dest;
+            bfsLayovers(g.getAdjList(), g.getAirports(), src, dest);
+        }
+
+        else if (choice == 6) {
             cout << "\nThank you for using Flight Optimizer!" << endl;
             cout << "Goodbye!" << endl;
             break;
         }
 
-        // Wrong input
         else {
-            cout << "\nInvalid choice! Please enter 1-5." << endl;
+            cout << "\nInvalid choice! Please enter 1-6." << endl;
         }
     }
 
